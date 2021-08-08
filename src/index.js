@@ -119,9 +119,11 @@ class HlsjsIPFSLoader {
 async function getFile(ipfs, rootHash, filename, options, debug, abortFlag) {
   // don't proxy absolute URLs through IPFS
   if (filename.match(/^https?:\/\//)) {
+    debug(`Absolute URL detected '${filename}'`)
     const result = await fetch(filename);
     if (result.ok) {
-      return Uint8Array.from(await result.arrayBuffer());
+      const array = await result.arrayBuffer();
+      return new Uint8Array(array);
     } else {
       throw new Error(`Failed to load absolute URL: ${filename} ${result.status} ${result.statusText}`);
     }
